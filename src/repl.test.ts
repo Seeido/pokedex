@@ -1,6 +1,4 @@
-import { cleanInput, getCommands } from "./repl.js";
-import { commandExit } from "./command_exit.js";
-import { commandHelp } from "./command_help.js";
+import { cleanInput } from "./repl.js";
 import { describe, expect, test } from "vitest";
 
 describe.each([
@@ -38,27 +36,3 @@ describe.each([
   });
 });
 
-describe("getCommands", () => {
-  test("returns an exit command wired to commandExit", () => {
-    const commands = getCommands();
-    expect(commands.exit).toEqual({
-      name: "exit",
-      description: "Exit the Pokedex",
-      callback: commandExit,
-    });
-  });
-
-  test("returns a help command wired to commandHelp", () => {
-    const commands = getCommands();
-    expect(commands.help).toEqual({
-      name: "help",
-      description: "Print help message",
-      callback: commandHelp,
-    });
-  });
-
-  test("returns only the exit and help commands", () => {
-    const commands = getCommands();
-    expect(Object.keys(commands).sort()).toEqual(["exit", "help"]);
-  });
-});

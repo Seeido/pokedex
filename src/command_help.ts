@@ -1,7 +1,8 @@
-import { CLICommand } from "./command.js";
+import { State } from "./state.js";
 
-export function commandHelp(commands: Record<string, CLICommand>) {
+export function commandHelp(state: State) {
   let messages = [];
+  const commands = state.commands;
   for (const cmd in commands) {
     messages.push(`${commands[cmd].name}: ${commands[cmd].description}`);
   }

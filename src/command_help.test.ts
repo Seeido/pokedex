@@ -1,6 +1,11 @@
 import { commandHelp } from "./command_help.js";
-import { CLICommand } from "./command.js";
+import type { Interface } from "node:readline";
+import { CLICommand, State } from "./state.js";
 import { describe, expect, test, vi, afterEach } from "vitest";
+
+function makeState(commands: Record<string, CLICommand>): State {
+  return { readline: {} as Interface, commands };
+}
 
 describe("commandHelp", () => {
   afterEach(() => {
@@ -22,7 +27,7 @@ describe("commandHelp", () => {
       },
     };
 
-    commandHelp(commands);
+    commandHelp(makeState(commands));
 
     expect(logSpy).toHaveBeenCalledOnce();
     const output = logSpy.mock.calls[0][0] as string;
@@ -35,7 +40,7 @@ describe("commandHelp", () => {
   test("prints only the welcome message and usage header when there are no commands", () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    commandHelp({});
+    commandHelp(makeState({}));
 
     expect(logSpy).toHaveBeenCalledOnce();
     expect(logSpy).toHaveBeenCalledWith("Welcome to the Pokedex!\nUsage:\n\n");
