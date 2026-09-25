@@ -4,16 +4,16 @@ export function cleanInput(input: string): string[] {
   return input.trim().toLowerCase().split(/\s+/);
 }
 
-export function startREPL() {
+export async function startREPL() {
   const state = initState();
   state.readline.prompt();
-  state.readline.on("line", (line) => {
+  state.readline.on("line", async (line) => {
     const input = cleanInput(line);
     const cmd = input[0];
     const commands = state.commands;
     if (commands[cmd]) {
       try {
-        commands[cmd].callback(state);
+        await commands[cmd].callback(state);
       } catch (error) {
         console.error(error);
       }

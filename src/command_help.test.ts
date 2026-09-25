@@ -1,10 +1,17 @@
 import { commandHelp } from "./command_help.js";
 import type { Interface } from "node:readline";
 import { CLICommand, State } from "./state.js";
+import { PokeAPI } from "./pokeapi.js";
 import { describe, expect, test, vi, afterEach } from "vitest";
 
 function makeState(commands: Record<string, CLICommand>): State {
-  return { readline: {} as Interface, commands };
+  return {
+    readline: {} as Interface,
+    commands,
+    pokeapi: new PokeAPI(),
+    nextLocationsURL: "",
+    prevLocationsURL: null,
+  };
 }
 
 describe("commandHelp", () => {
@@ -12,7 +19,7 @@ describe("commandHelp", () => {
     vi.restoreAllMocks();
   });
 
-  test("prints the welcome message and every command's name and description", () => {
+  test("prints the welcome message and every command's name and description", async () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     const commands: Record<string, CLICommand> = {
       exit: {
@@ -27,7 +34,7 @@ describe("commandHelp", () => {
       },
     };
 
-    commandHelp(makeState(commands));
+    await commandHelp(makeState(commands));
 
     expect(logSpy).toHaveBeenCalledOnce();
     const output = logSpy.mock.calls[0][0] as string;
@@ -37,10 +44,10 @@ describe("commandHelp", () => {
     expect(output).toContain("help: Print help message");
   });
 
-  test("prints only the welcome message and usage header when there are no commands", () => {
+  test("prints only the welcome message and usage header when there are no commands", async () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    commandHelp(makeState({}));
+    await commandHelp(makeState({}));
 
     expect(logSpy).toHaveBeenCalledOnce();
     expect(logSpy).toHaveBeenCalledWith("Welcome to the Pokedex!\nUsage:\n\n");
