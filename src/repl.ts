@@ -10,10 +10,11 @@ export async function startREPL() {
   state.readline.on("line", async (line) => {
     const input = cleanInput(line);
     const cmd = input[0];
+    const arg = input[1];
     const commands = state.commands;
     if (commands[cmd]) {
       try {
-        await commands[cmd].callback(state);
+        await commands[cmd].callback(state, arg);
       } catch (error) {
         console.error(error);
       }

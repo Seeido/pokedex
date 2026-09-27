@@ -3,6 +3,7 @@ import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
+import { commandExplore } from "./command_explore.js";
 import { PokeAPI } from "./pokeapi.js";
 import { describe, expect, test, afterEach } from "vitest";
 
@@ -49,10 +50,20 @@ describe("initState", () => {
     });
   });
 
-  test("registers only the exit, help, map, and mapb commands", () => {
+  test("registers an explore command wired to commandExplore", () => {
+    state = initState();
+    expect(state.commands.explore).toEqual({
+      name: "explore",
+      description: "Displays a list of all the Pokémon in a given area",
+      callback: commandExplore,
+    });
+  });
+
+  test("registers only the exit, explore, help, map, and mapb commands", () => {
     state = initState();
     expect(Object.keys(state.commands).sort()).toEqual([
       "exit",
+      "explore",
       "help",
       "map",
       "mapb",
