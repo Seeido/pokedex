@@ -6,6 +6,8 @@ import { commandMap } from "./command_map.js";
 import { PokeAPI, ShallowLocations } from "./pokeapi.js";
 import { commandMapb } from "./command_mapb.js";
 
+const CACHE_INTERVAL_MS = 5 * 60 * 1000;
+
 export type CLICommand = {
   name: string;
   description: string;
@@ -28,7 +30,7 @@ export function initState() {
       prompt: "Pokédex > ",
     }),
     commands: getCommands(),
-    pokeapi: new PokeAPI(),
+    pokeapi: new PokeAPI(CACHE_INTERVAL_MS),
     nextLocationsURL: "", // "" = not started yet (fetchLocations falls back to page one); null = no more pages
     prevLocationsURL: null,
   };

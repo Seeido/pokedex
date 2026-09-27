@@ -19,7 +19,7 @@ describe("commandExit", () => {
     const state: State = {
       readline: { close } as unknown as Interface,
       commands: {},
-      pokeapi: new PokeAPI(),
+      pokeapi: new PokeAPI(60_000),
       nextLocationsURL: "",
       prevLocationsURL: null,
     };

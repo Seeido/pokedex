@@ -8,7 +8,7 @@ function makeState(commands: Record<string, CLICommand>): State {
   return {
     readline: {} as Interface,
     commands,
-    pokeapi: new PokeAPI(),
+    pokeapi: new PokeAPI(60_000),
     nextLocationsURL: "",
     prevLocationsURL: null,
   };
