@@ -1,4 +1,5 @@
 import { Cache } from "./pokecache.js";
+import { z } from "zod";
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
@@ -18,7 +19,7 @@ export class PokeAPI {
       throw new Error(`Response status: ${response.status}`);
     }
 
-    const result = await response.json();
+    const result = ShallowLocationsSchema.parse(await response.json());
     this.#cache.add(url, result);
     return result;
   }
@@ -28,16 +29,18 @@ export class PokeAPI {
   //   }
 }
 
-export type ShallowLocations = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: ShallowLocation[];
-};
+const ShallowLocationSchema = z.object({
+  name: z.string(),
+  url: z.string(),
+});
 
-export type ShallowLocation = {
-  name: string;
-  url: string;
-};
+const ShallowLocationsSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
+  results: z.array(ShallowLocationSchema),
+});
 
-export type Location = {};
+export type ShallowLocations = z.infer<typeof ShallowLocationsSchema>;
+
+// export type Location = {};
