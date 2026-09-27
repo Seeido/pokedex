@@ -7,7 +7,7 @@
     "build": "npx tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
     "dev": "npx tsc -p tsconfig.build.json && node dist/main.js",
-    "test": "vitest --run"
+    "test": "npx tsc -p tsconfig.build.json && vitest --run"
   },
   "repository": {
     "type": "git",
