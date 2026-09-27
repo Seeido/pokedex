@@ -18,7 +18,7 @@ export async function startREPL() {
         console.error(error);
       }
     } else {
-      console.log("Unkown command");
+      console.log("Unknown command");
     }
     state.readline.prompt();
   });
