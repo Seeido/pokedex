@@ -49,11 +49,18 @@ describe("PokeAPI.fetchLocations", () => {
   test("throws when the response is not ok", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(new Response(null, { status: 500 })),
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(null, {
+            status: 500,
+            statusText: "Internal Server Error",
+          }),
+        ),
     );
 
     await expect(new PokeAPI(60_000).fetchLocations()).rejects.toThrow(
-      "Response status: 500",
+      "Request failed (500 Internal Server Error) for https://pokeapi.co/api/v2/location-area",
     );
   });
 
@@ -87,12 +94,19 @@ describe("PokeAPI.fetchLocations", () => {
   test("does not cache a failed response", async () => {
     const fetchMock = vi
       .fn()
-      .mockResolvedValueOnce(new Response(null, { status: 500 }))
+      .mockResolvedValueOnce(
+        new Response(null, {
+          status: 500,
+          statusText: "Internal Server Error",
+        }),
+      )
       .mockResolvedValueOnce(Response.json(page));
     vi.stubGlobal("fetch", fetchMock);
     const api = new PokeAPI(60_000);
 
-    await expect(api.fetchLocations()).rejects.toThrow("Response status: 500");
+    await expect(api.fetchLocations()).rejects.toThrow(
+      "Request failed (500 Internal Server Error) for https://pokeapi.co/api/v2/location-area",
+    );
     await expect(api.fetchLocations()).resolves.toEqual(page);
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });

@@ -16,7 +16,9 @@ export class PokeAPI {
 
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      throw new Error(
+        `Request failed (${response.status} ${response.statusText}) for ${url}`,
+      );
     }
 
     const result = ShallowLocationsSchema.parse(await response.json());
@@ -31,7 +33,9 @@ export class PokeAPI {
 
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      throw new Error(
+        `Request failed (${response.status} ${response.statusText}) for ${url}`,
+      );
     }
 
     const result = LocationSchema.parse(await response.json());

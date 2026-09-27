@@ -51,11 +51,13 @@ describe("commandExplore", () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     const state = makeState();
     vi.spyOn(state.pokeapi, "fetchLocation").mockRejectedValue(
-      new Error("Response status: 404"),
+      new Error(
+        "Request failed (404 Not Found) for https://pokeapi.co/api/v2/location-area/nowhere",
+      ),
     );
 
     await expect(commandExplore(state, "nowhere")).rejects.toThrow(
-      "Response status: 404",
+      "Request failed (404 Not Found) for https://pokeapi.co/api/v2/location-area/nowhere",
     );
     expect(logSpy).not.toHaveBeenCalled();
   });
