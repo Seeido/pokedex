@@ -1,5 +1,5 @@
 import type { Interface } from "node:readline";
-import { commandCatch } from "./command_catch.js";
+import { CATCH_ROLL_MAX, commandCatch } from "./command_catch.js";
 import { PokeAPI, Pokemon } from "./pokeapi.js";
 import { State } from "./state.js";
 import { describe, expect, test, vi, afterEach } from "vitest";
@@ -83,9 +83,13 @@ describe("commandCatch", () => {
 
   test("lets the Pokemon escape when the roll exactly equals its base experience", async () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-    vi.spyOn(Math, "random").mockReturnValue(pokemon.base_experience / 600);
+    // Halving is exact in floating point, so the roll ties the base experience with no rounding
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
     const state = makeState();
-    vi.spyOn(state.pokeapi, "fetchPokemon").mockResolvedValue(pokemon);
+    vi.spyOn(state.pokeapi, "fetchPokemon").mockResolvedValue({
+      ...pokemon,
+      base_experience: 0.5 * CATCH_ROLL_MAX,
+    });
 
     await commandCatch(state, "pikachu");
 
