@@ -8,6 +8,7 @@ import { commandMapb } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
 import { commandCatch } from "./command_catch.js";
 import { commandInspect } from "./command_inspect.js";
+import { commandPokedex } from "./command_pokedex.js";
 
 const CACHE_INTERVAL_MS = 5 * 60 * 1000;
 
@@ -78,6 +79,11 @@ function getCommands(): Record<string, CLICommand> {
       name: "inspect",
       description: "Inspect a Pokemon in your Pokedex",
       callback: commandInspect,
+    },
+    pokedex: {
+      name: "pokedex",
+      description: "Displays a list of all the Pokémon you have caught",
+      callback: commandPokedex,
     },
   };
 }
