@@ -1,4 +1,4 @@
-import { PokeAPI, ShallowLocations } from "./pokeapi.js";
+import { PokeAPI, Pokemon, ShallowLocations } from "./pokeapi.js";
 import { describe, expect, test, vi, afterEach } from "vitest";
 
 const page: ShallowLocations = {
@@ -109,5 +109,69 @@ describe("PokeAPI.fetchLocations", () => {
     );
     await expect(api.fetchLocations()).resolves.toEqual(page);
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+const pokemon: Pokemon = {
+  id: 25,
+  name: "pikachu",
+  base_experience: 112,
+};
+
+describe("PokeAPI.fetchPokemon", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  test("fetches the Pokemon by name", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(Response.json(pokemon));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await new PokeAPI(60_000).fetchPokemon("pikachu");
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://pokeapi.co/api/v2/pokemon/pikachu",
+    );
+    expect(result).toEqual(pokemon);
+  });
+
+  test("strips fields not in the schema", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(Response.json({ ...pokemon, height: 4, weight: 60 })),
+    );
+
+    const result = await new PokeAPI(60_000).fetchPokemon("pikachu");
+
+    expect(result).toEqual(pokemon);
+  });
+
+  test("throws when the response is not ok", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(null, { status: 404, statusText: "Not Found" }),
+        ),
+    );
+
+    await expect(new PokeAPI(60_000).fetchPokemon("missingno")).rejects.toThrow(
+      "Request failed (404 Not Found) for https://pokeapi.co/api/v2/pokemon/missingno",
+    );
+  });
+
+  test("returns a cached Pokemon without fetching it again", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(Response.json(pokemon));
+    vi.stubGlobal("fetch", fetchMock);
+    const api = new PokeAPI(60_000);
+
+    const first = await api.fetchPokemon("pikachu");
+    const second = await api.fetchPokemon("pikachu");
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(second).toEqual(first);
   });
 });

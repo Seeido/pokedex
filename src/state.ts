@@ -3,9 +3,10 @@ import { stdin, stdout } from "node:process";
 import { commandHelp } from "./command_help.js";
 import { commandExit } from "./command_exit.js";
 import { commandMap } from "./command_map.js";
-import { PokeAPI, ShallowLocations } from "./pokeapi.js";
+import { PokeAPI, Pokemon, ShallowLocations } from "./pokeapi.js";
 import { commandMapb } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
+import { commandCatch } from "./command_catch.js";
 
 const CACHE_INTERVAL_MS = 5 * 60 * 1000;
 
@@ -21,6 +22,7 @@ export type State = {
   pokeapi: PokeAPI;
   nextLocationsURL: ShallowLocations["next"];
   prevLocationsURL: ShallowLocations["previous"];
+  pokedex: Record<string, Pokemon>;
 };
 
 export function initState() {
@@ -34,6 +36,7 @@ export function initState() {
     pokeapi: new PokeAPI(CACHE_INTERVAL_MS),
     nextLocationsURL: "", // "" = not started yet (fetchLocations falls back to page one); null = no more pages
     prevLocationsURL: null,
+    pokedex: {},
   };
   return state;
 }
@@ -64,6 +67,11 @@ function getCommands(): Record<string, CLICommand> {
       name: "explore",
       description: "Displays a list of all the Pokémon in a given area",
       callback: commandExplore,
+    },
+    catch: {
+      name: "catch",
+      description: "Attempts to catch a Pokémon",
+      callback: commandCatch,
     },
   };
 }

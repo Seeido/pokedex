@@ -11,6 +11,7 @@ function makeState(overrides: Partial<State> = {}): State {
     pokeapi: new PokeAPI(60_000),
     nextLocationsURL: "",
     prevLocationsURL: null,
+    pokedex: {},
     ...overrides,
   };
 }

@@ -4,6 +4,7 @@ import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
+import { commandCatch } from "./command_catch.js";
 import { PokeAPI } from "./pokeapi.js";
 import { describe, expect, test, afterEach } from "vitest";
 
@@ -59,9 +60,19 @@ describe("initState", () => {
     });
   });
 
-  test("registers only the exit, explore, help, map, and mapb commands", () => {
+  test("registers a catch command wired to commandCatch", () => {
+    state = initState();
+    expect(state.commands.catch).toEqual({
+      name: "catch",
+      description: "Attempts to catch a Pokémon",
+      callback: commandCatch,
+    });
+  });
+
+  test("registers only the catch, exit, explore, help, map, and mapb commands", () => {
     state = initState();
     expect(Object.keys(state.commands).sort()).toEqual([
+      "catch",
       "exit",
       "explore",
       "help",
@@ -80,5 +91,10 @@ describe("initState", () => {
     expect(state.pokeapi).toBeInstanceOf(PokeAPI);
     expect(state.nextLocationsURL).toBe("");
     expect(state.prevLocationsURL).toBeNull();
+  });
+
+  test("starts with an empty pokedex", () => {
+    state = initState();
+    expect(state.pokedex).toEqual({});
   });
 });

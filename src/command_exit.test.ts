@@ -22,6 +22,7 @@ describe("commandExit", () => {
       pokeapi: new PokeAPI(60_000),
       nextLocationsURL: "",
       prevLocationsURL: null,
+      pokedex: {},
     };
 
     await commandExit(state);

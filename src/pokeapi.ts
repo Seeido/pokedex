@@ -42,6 +42,23 @@ export class PokeAPI {
     this.#cache.add(url, result);
     return result;
   }
+
+  async fetchPokemon(name: string): Promise<Pokemon> {
+    const url = PokeAPI.baseURL + `/pokemon/${name}`;
+    const cacheObj = this.#cache.get(url);
+    if (cacheObj) return cacheObj;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `Request failed (${response.status} ${response.statusText}) for ${url}`,
+      );
+    }
+
+    const result = PokemonSchema.parse(await response.json());
+    this.#cache.add(url, result);
+    return result;
+  }
 }
 
 const ShallowLocationSchema = z.object({
@@ -59,16 +76,21 @@ const ShallowLocationsSchema = z.object({
 export type ShallowLocations = z.infer<typeof ShallowLocationsSchema>;
 
 const PokemonSchema = z.object({
-  pokemon: z.object({
-    name: z.string(),
-    url: z.string(),
-  }),
+  id: z.number(),
+  name: z.string(),
+  base_experience: z.number(),
 });
+
+export type Pokemon = z.infer<typeof PokemonSchema>;
 
 const LocationSchema = z.object({
   id: z.number(),
   name: z.string(),
-  pokemon_encounters: z.array(PokemonSchema),
+  pokemon_encounters: z.array(
+    z.object({
+      pokemon: z.object({ name: z.string(), url: z.string() }),
+    }),
+  ),
 });
 
 export type Location = z.infer<typeof LocationSchema>;
