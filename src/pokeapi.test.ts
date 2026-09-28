@@ -116,6 +116,26 @@ const pokemon: Pokemon = {
   id: 25,
   name: "pikachu",
   base_experience: 112,
+  height: 4,
+  weight: 60,
+  stats: [
+    {
+      base_stat: 35,
+      effort: 0,
+      stat: { name: "hp", url: "https://pokeapi.co/api/v2/stat/1/" },
+    },
+    {
+      base_stat: 90,
+      effort: 2,
+      stat: { name: "speed", url: "https://pokeapi.co/api/v2/stat/6/" },
+    },
+  ],
+  types: [
+    {
+      slot: 1,
+      type: { name: "electric", url: "https://pokeapi.co/api/v2/type/13/" },
+    },
+  ],
 };
 
 describe("PokeAPI.fetchPokemon", () => {
@@ -140,7 +160,7 @@ describe("PokeAPI.fetchPokemon", () => {
       "fetch",
       vi
         .fn()
-        .mockResolvedValue(Response.json({ ...pokemon, height: 4, weight: 60 })),
+        .mockResolvedValue(Response.json({ ...pokemon, order: 35, is_default: true })),
     );
 
     const result = await new PokeAPI(60_000).fetchPokemon("pikachu");

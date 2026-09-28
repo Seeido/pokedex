@@ -5,6 +5,7 @@ import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
 import { commandCatch } from "./command_catch.js";
+import { commandInspect } from "./command_inspect.js";
 import { PokeAPI } from "./pokeapi.js";
 import { describe, expect, test, afterEach } from "vitest";
 
@@ -69,13 +70,23 @@ describe("initState", () => {
     });
   });
 
-  test("registers only the catch, exit, explore, help, map, and mapb commands", () => {
+  test("registers an inspect command wired to commandInspect", () => {
+    state = initState();
+    expect(state.commands.inspect).toEqual({
+      name: "inspect",
+      description: "Inspect a Pokemon in your Pokedex",
+      callback: commandInspect,
+    });
+  });
+
+  test("registers only the catch, exit, explore, help, inspect, map, and mapb commands", () => {
     state = initState();
     expect(Object.keys(state.commands).sort()).toEqual([
       "catch",
       "exit",
       "explore",
       "help",
+      "inspect",
       "map",
       "mapb",
     ]);

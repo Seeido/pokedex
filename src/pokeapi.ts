@@ -79,6 +79,21 @@ const PokemonSchema = z.object({
   id: z.number(),
   name: z.string(),
   base_experience: z.number(),
+  height: z.number(),
+  weight: z.number(),
+  stats: z.array(
+    z.object({
+      base_stat: z.number(),
+      effort: z.number(),
+      stat: z.object({ name: z.string(), url: z.string() }),
+    }),
+  ),
+  types: z.array(
+    z.object({
+      slot: z.number(),
+      type: z.object({ name: z.string(), url: z.string() }),
+    }),
+  ),
 });
 
 export type Pokemon = z.infer<typeof PokemonSchema>;

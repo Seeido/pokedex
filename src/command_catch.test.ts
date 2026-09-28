@@ -20,6 +20,26 @@ const pokemon: Pokemon = {
   id: 25,
   name: "pikachu",
   base_experience: 112,
+  height: 4,
+  weight: 60,
+  stats: [
+    {
+      base_stat: 35,
+      effort: 0,
+      stat: { name: "hp", url: "https://pokeapi.co/api/v2/stat/1/" },
+    },
+    {
+      base_stat: 90,
+      effort: 2,
+      stat: { name: "speed", url: "https://pokeapi.co/api/v2/stat/6/" },
+    },
+  ],
+  types: [
+    {
+      slot: 1,
+      type: { name: "electric", url: "https://pokeapi.co/api/v2/type/13/" },
+    },
+  ],
 };
 
 describe("commandCatch", () => {
@@ -76,7 +96,15 @@ describe("commandCatch", () => {
   test("keeps previously caught Pokemon when catching another", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(Math, "random").mockReturnValue(0.99);
-    const bulbasaur: Pokemon = { id: 1, name: "bulbasaur", base_experience: 64 };
+    const bulbasaur: Pokemon = {
+      id: 1,
+      name: "bulbasaur",
+      base_experience: 64,
+      height: 7,
+      weight: 69,
+      stats: [],
+      types: [],
+    };
     const state = makeState({ pokedex: { bulbasaur } });
     vi.spyOn(state.pokeapi, "fetchPokemon").mockResolvedValue(pokemon);
 
